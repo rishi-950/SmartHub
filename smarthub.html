@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>SmartHub — Shopping · Telugu Music · The Hindu News</title>
+<style>
+  :root{--accent:#6a1b9a}
+  body{
+    font-family:Arial, sans-serif;margin:0;
+    transition:background-image .45s ease-in-out;
+    background-size:cover;background-position:center;
+    color:white;min-height:100vh;
+    background-image: url('images/default.jpg');
+  }
+  header{background:rgba(0,0,0,.65);text-align:center;padding:14px;font-size:1.2rem}
+  nav{display:flex;flex-wrap:wrap;justify-content:center;background:rgba(0,0,0,.55);padding:8px;gap:6px}
+  nav button{background:transparent;border:1px solid #fff;color:#fff;padding:8px 12px;border-radius:8px;cursor:pointer}
+  nav button:hover{background:#fff;color:#000}
+  .subcategory-nav{display:none;justify-content:center;background:rgba(0,0,0,.6);padding:8px;gap:6px}
+  .subcategory-nav.active{display:flex}
+  .subcategory-nav button{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:#fff;padding:8px 10px;border-radius:8px;cursor:pointer}
+  .container{display:none;padding:18px}
+  .container.active{display:block}
+  .item{background:rgba(255,255,255,.06);padding:10px;border-radius:10px;width:180px;text-align:center;margin:10px}
+  .item img{width:100%;height:140px;object-fit:cover;border-radius:8px}
+  button.cart,button.fav{background:#ffeb3b;color:#111;border:none;padding:6px 8px;border-radius:6px;cursor:pointer;margin:6px 4px;font-weight:bold}
+  button.fav{background:#ff4081;color:white}
+  #cart,#favorites{background:rgba(0,0,0,.7);padding:16px;display:none}
+  footer{padding:12px;text-align:center;background:rgba(0,0,0,.6);margin-top:18px}
+  .music-grid{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:20px;
+  }
+  .music-card{
+    background:rgba(0,0,0,.55);
+    border-radius:12px;
+    width:340px;
+    padding:14px;
+    text-align:center;
+  }
+  .music-card img{
+    width:100%;
+    height:200px;
+    border-radius:10px;
+    object-fit:cover;
+  }
+  .spotify-playlist{
+    width:100%;
+    height:380px;
+    border:none;
+    border-radius:10px;
+    margin-top:10px;
+  }
+  #popup {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #4caf50;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 10px;
+    display: none;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+
+<header>🛍️ SmartHub</header>
+
+<nav>
+  <button onclick="showShopping()">Shopping</button>
+  <button onclick="showMainSection('music')">Music</button>
+  <button onclick="showMainSection('news')">News</button>
+  <button onclick="toggleSection('cart')">🛒 Cart</button>
+  <button onclick="toggleSection('favorites')">❤️ Favorites</button>
+</nav>
+
+<!-- Shopping Sub-nav -->
+<div id="shoppingSub" class="subcategory-nav">
+  <button onclick="showCategory('groceries')">Groceries</button>
+  <button onclick="showCategory('clothing')">Clothing</button>
+  <button onclick="showCategory('makeup')">Makeup</button>
+  <button onclick="showCategory('electronics')">Electronics</button>
+  <button onclick="showCategory('homedecor')">Home Decor</button>
+  <button onclick="showCategory('stationery')">Stationery</button>
+  <button onclick="showCategory('footwear')">Footwear</button>
+  <button onclick="showCategory('toys')">Toys & Accessories</button>
+</div>
+
+<!-- Shopping containers -->
+<div id="groceries" class="container"></div>
+<div id="clothing" class="container"></div>
+<div id="makeup" class="container"></div>
+<div id="electronics" class="container"></div>
+<div id="homedecor" class="container"></div>
+<div id="stationery" class="container"></div>
+<div id="footwear" class="container"></div>
+<div id="toys" class="container"></div>
+
+<!-- MUSIC -->
+<section id="music" class="container">
+  <h2 style="text-align:center;">🎧 Telugu Music — Spotify Playlists</h2>
+  <div class="music-grid">
+    <div class="music-card">
+      <img src="images/music.jpg" alt="Top Hindi Hits">
+      <h3>Top Hindi Hits (2025)</h3>
+      <iframe class="spotify-playlist" src="https://open.spotify.com/embed/playlist/37i9dQZF1DX0XUfTFmNBRM" allow="autoplay; clipboard-write; encrypted-media;"></iframe>
+    </div>
+    <div class="music-card">
+      <img src="images/music.jpg" alt="Top Telugu Hits">
+      <h3>Top Telugu Hits (2025)</h3>
+      <iframe class="spotify-playlist" src="https://open.spotify.com/embed/playlist/37i9dQZF1DWWwrjLPC16W7" allow="autoplay; clipboard-write; encrypted-media;"></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- NEWS -->
+<div id="news" class="container">
+  <h2 style="width:100%;text-align:center">📰 Latest Telugu News</h2>
+  <iframe src="https://telugu.news18.com/" style="width:100%;height:600px;border:0;border-radius:8px"></iframe>
+</div>
+
+<!-- CART & FAVORITES -->
+<div id="cart"><h2>🛒 Your Cart</h2><ul id="cartItems"></ul></div>
+<div id="favorites"><h2>❤️ Your Favorites</h2><ul id="favItems"></ul></div>
+
+<div id="popup"></div>
+
+<footer>2025 SmartHub</footer>
+
+<script>
+const items = {
+  groceries:[{name:'Apples',price:50,img:'images/groceries1.jpg'},
+    {name:'Rice',price:60,img:'images/groceries2.jpg'},
+    {name:'Milk',price:40,img:'images/groceries3.jpg'},
+    {name:'Eggs',price:70,img:'images/groceries4.jpg'},
+    {name:'Sugar',price:55,img:'images/groceries5.jpg'},
+    {name:'Flour',price:45,img:'images/groceries6.jpg'}],
+  clothing:[{name:'T-Shirt',price:300,img:'images/clothing1.jpg'},
+    {name:'Jeans',price:800,img:'images/clothing2.jpg'},
+    {name:'Dress',price:1200,img:'images/clothing3.jpg'},
+    {name:'Jacket',price:1500,img:'images/clothing4.jpg'},
+    {name:'Shirt',price:600,img:'images/clothing5.jpg'},
+    {name:'Skirt',price:700,img:'images/clothing6.jpg'}],
+  makeup:[{name:'Lipstick',price:250,img:'images/makeup1.jpg'},
+    {name:'Eyeliner',price:150,img:'images/makeup2.jpg'},
+    {name:'Foundation',price:400,img:'images/makeup3.jpg'},
+    {name:'Blush',price:200,img:'images/makeup4.jpg'},
+    {name:'Compact',price:300,img:'images/makeup5.jpg'},
+    {name:'Mascara',price:250,img:'images/makeup6.jpg'}],
+  electronics:[{name:'Smartphone',price:15000,img:'images/electronics1.jpg'},
+    {name:'Laptop',price:40000,img:'images/electronics2.jpg'},
+    {name:'Headphones',price:1500,img:'images/electronics3.jpg'},
+    {name:'Smartwatch',price:3000,img:'images/electronics4.jpg'},
+    {name:'Camera',price:25000,img:'images/electronics5.jpg'},
+    {name:'Speaker',price:2000,img:'images/electronics6.jpg'}],
+  homedecor:[{name:'Wall Art',price:1200,img:'images/homedecor1.jpg'},
+    {name:'Vase',price:800,img:'images/homedecor2.jpg'},
+    {name:'Lamp',price:900,img:'images/homedecor3.jpg'},
+    {name:'Cushion',price:400,img:'images/homedecor4.jpg'},
+    {name:'Clock',price:600,img:'images/homedecor5.jpg'},
+    {name:'Rug',price:1500,img:'images/homedecor6.jpg'}],
+  stationery:[{name:'Notebook',price:50,img:'images/stationery1.jpg'},
+    {name:'Pen',price:20,img:'images/stationery2.jpg'},
+    {name:'Pencil',price:10,img:'images/stationery3.jpg'},
+    {name:'Marker',price:25,img:'images/stationery4.jpg'},
+    {name:'Files',price:70,img:'images/stationery5.jpg'},
+    {name:'Crayons',price:90,img:'images/stationery6.jpg'}],
+  footwear:[{name:'Sneakers',price:1500,img:'images/footwear1.jpg'},
+    {name:'Heels',price:1200,img:'images/footwear2.jpg'},
+    {name:'Sandals',price:800,img:'images/footwear3.jpg'},
+    {name:'Boots',price:2000,img:'images/footwear4.jpg'},
+    {name:'Flip Flops',price:400,img:'images/footwear5.jpg'},
+    {name:'Formal Shoes',price:1800,img:'images/footwear6.jpg'}],
+  toys:[{name:'Teddy Bear',price:600,img:'images/toys1.jpg'},
+    {name:'Car Toy',price:300,img:'images/toys2.jpg'},
+    {name:'Doll',price:400,img:'images/toys3.jpg'},
+    {name:'Blocks',price:250,img:'images/toys4.jpg'},
+    {name:'Ball',price:150,img:'images/toys5.jpg'},
+    {name:'Drone Toy',price:1200,img:'images/toys6.jpg'}]
+};
+
+const categoryBackgrounds={
+  default:'images/default.jpg',shopping:'images/shopping.jpg',groceries:'images/groceries.jpg',clothing:'images/clothing.jpg',
+  makeup:'images/makeup.jpg',electronics:'images/electronics.jpg',homedecor:'images/homedecor.jpg',stationery:'images/stationery.jpg',
+  footwear:'images/footwear.jpg',toys:'images/toys.jpg',music:'images/music.jpg',news:'images/news.jpg'
+};
+
+let cart=[],favorites=[];
+
+function showPopup(msg){
+  const p=document.getElementById('popup');
+  p.textContent=msg;
+  p.style.display='block';
+  setTimeout(()=>p.style.display='none',1500);
+}
+
+function addToCart(i){cart.push(i);updateCart();showPopup('✅ Added to Cart!');}
+function addToFavorites(i){favorites.push(i);updateFavorites();showPopup('❤️ Added to Favorites!');}
+
+function makeCard(i){
+  return `<div class="item">
+    <img src="${i.img}"><h4>${i.name}</h4><p>₹${i.price}</p>
+    <button class="cart" onclick='addToCart(${JSON.stringify(i)})'>Add to Cart</button>
+    <button class="fav" onclick='addToFavorites(${JSON.stringify(i)})'>❤️ Favorite</button>
+  </div>`;
+}
+
+function renderCategories(){
+  for(const [k,a] of Object.entries(items)){
+    document.getElementById(k).innerHTML=`<h2>${k}</h2>
+    <div style="display:flex;flex-wrap:wrap;justify-content:center">
+    ${a.map(makeCard).join('')}</div>`;
+  }
+}
+renderCategories();
+
+function updateCart(){
+  document.getElementById('cartItems').innerHTML=cart.map(i=>`<li>${i.name} — ₹${i.price}</li>`).join('');
+}
+function updateFavorites(){
+  document.getElementById('favItems').innerHTML=favorites.map(i=>`<li>${i.name}</li>`).join('');
+}
+
+function hideAll(){
+  document.querySelectorAll('.container').forEach(c=>c.classList.remove('active'));
+  document.getElementById('shoppingSub').classList.remove('active');
+  document.getElementById('cart').style.display='none';
+  document.getElementById('favorites').style.display='none';
+}
+
+function showShopping(){
+  hideAll();
+  document.getElementById('shoppingSub').classList.add('active');
+  document.body.style.backgroundImage=`url('${categoryBackgrounds.shopping}')`;
+}
+
+function showMainSection(s){
+  hideAll();
+  document.getElementById(s).classList.add('active');
+  document.body.style.backgroundImage=`url('${categoryBackgrounds[s]||categoryBackgrounds.default}')`;
+}
+
+function showCategory(cat){
+  hideAll();
+  document.getElementById('shoppingSub').classList.add('active');
+  document.getElementById(cat).classList.add('active');
+  document.body.style.backgroundImage=`url('${categoryBackgrounds[cat]||categoryBackgrounds.default}')`;
+}
+
+function toggleSection(id){
+  hideAll();
+  const el=document.getElementById(id);
+  el.style.display=(el.style.display==='block')?'none':'block';
+}
+
+document.body.style.backgroundImage=`url('${categoryBackgrounds.default}')`;
+</script>
+</body>
+</html>
