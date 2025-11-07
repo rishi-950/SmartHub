@@ -4,29 +4,24 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git 'https://github.com/rishi-950/SmartHub.git'
+                git branch: 'master', url: 'https://github.com/rishi-950/SmartHub.git'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                script {
-                    echo "Building Docker image..."
-                    sh 'docker build -t my-website .'
-                }
+                echo 'Building Docker image...'
+                bat '"C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe" build -t smarthub-app .'
             }
         }
 
         stage('Run Docker Container') {
             steps {
-                script {
-                    echo "Stopping old container if running..."
-                    sh 'docker stop my-website-container || true'
-                    sh 'docker rm my-website-container || true'
-
-                    echo "Running new container on port 9090..."
-                    sh 'docker run -d -p 9090:80 --name my-website-container my-website'
-                }
+                echo 'Running Docker container on port 9090...'
+                // Stop existing container if running
+                bat '"C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe" rm -f smarthub-container || exit 0'
+                // Run new container
+                bat '"C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe" run -d -p 9090:80 --name smarthub-container smarthub-app'
             }
         }
     }
